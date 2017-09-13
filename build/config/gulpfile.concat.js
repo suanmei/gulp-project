@@ -1,8 +1,8 @@
-var concat_config = {
-    pre: config.releaseDir,
+module.exports = {
+    pre: 'dist/',
     files: [
         //首屏加载阻塞js
-        ['js/first.min.js',[
+        ['first.min.js',[
             'js/index/index-cover.js',
             'js/index/default/index.js',
             'js/index/default/component-config.js',
@@ -27,7 +27,7 @@ var concat_config = {
             'js/components/activity/index.js',
             'js/components/shop-entry/index.js',
             'js/components/content/index.js',
-            'js/components/advert/hotArea.js',
+            // 'js/components/advert/hotArea.js',
 
             'js/components/advanced/item-render-class.js',
             'js/components/advanced/seckill-activity.js',
@@ -47,7 +47,7 @@ var concat_config = {
 
         ]],
         //首屏直抒的js文件
-        ['js/firstCommon.min.js',[
+        ['firstCommon.min.js',[
             'js/common/topBar.js',
             'js/common/watcher.js',
             'js/common/zepto/zepto.js',
@@ -63,7 +63,7 @@ var concat_config = {
             'js/common/flexible.js',
         ]],
         //首屏异步加载的文件
-        ['js/async.min.js',[
+        ['async.min.js',[
             'js/common/iscroll.js',
             'js/common/jroll.js',
             'js/common/VTrace.js',
@@ -87,11 +87,11 @@ var concat_config = {
             'js/common/historyBack.js',
         ]],
 		//第三方插件库
-        ['js/lib.min.js', [
+        ['lib.min.js', [
             'js/common/swiper.js'
         ]],
         //公用common类库
-        ['js/common.min.js', [
+        ['common.min.js', [
             'js/common/platfrom.js',
             'js/common/slidedown.js',
             'js/common/ui/loading.js',
@@ -108,12 +108,12 @@ var concat_config = {
             'js/components/item/multi-sku.js',
         ]],
         //店铺页公用js
-        ['js/index.min.js', [
+        ['index.min.js', [
             'js/index/default/classify-panel.js',
             'js/index/default/index-cart.js'
         ]],
         //超市模板js
-        ['js/supermarket.min.js', [
+        ['supermarket.min.js', [
             'js/index/supermarket/cart.js',
             'js/index/supermarket/cart-refresh-cookie.js',
             'js/index/supermarket/cart-refresh-server.js',
@@ -122,17 +122,17 @@ var concat_config = {
             'js/index/supermarket/sku.js'
         ]],
         //个人模板
-        ['js/index.personal.js', [
+        ['index.personal.js', [
             'js/index/personal/commodityList.js',
             'js/index/personal/diaryList.js',
             'js/index/personal/galleryList.js',
             'js/index/personal/index.js'
         ]],
         //超市模板css
-        ['css/combo/supermarket.min.css', [
+        ['supermarket.min.css', [
             'css/common/base.css',
             'css/index/index.css',
             'css/index/supermarket/supermarket.css'
-        ]]
+        ], 'css/combo/']
     ]
 };

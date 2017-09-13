@@ -10,16 +10,18 @@ var connect = require("gulp-connect");
 var changed = require('gulp-changed');
 var debug = require('gulp-debug');
 var sourcemaps = require('gulp-sourcemaps');
-var concat = require('gulp-concat');
 var del = require('del');
 var notify = require('gulp-notify');
 var eslint = require('gulp-eslint');
 var autoprefixer = require('gulp-autoprefixer');
 var fileinclude = require('gulp-file-include');
-var Config = require('../gulpfile.config.js');
 var template = require('gulp-template');
 var plumber = require('gulp-plumber');
 var component = require('gulp-component-inline');
+
+var Config = require('../config/gulpfile.path.js');
+var Utils = require('../gulpfile.utils.js');
+var domainMap = Utils.generateDomainMap();
 
 function devLogic() {
 	gulp.task('del', function(done) {
@@ -36,18 +38,11 @@ function devLogic() {
 	gulp.task('html', function() {
 	    return gulp.src(Config.html.src)
 			.pipe(changed(Config.html.dist))
+			.pipe(plumber())
 	        .pipe(fileinclude({
 		      basepath: Config.fileinclude.src
 		    }))
-			.pipe(template({
-				templateMap: '{}',
-	            H5WDCOM: {},
-	            LANDebugPort: {},
-	            serverUrl: '//http',
-	            baseUrl: 'weidian',
-	            PubbaseUrl: 's.geilicdn',
-	            staticBase: '//weidian.com'
-	        }))
+			.pipe(template(domainMap))
 	        .pipe(gulp.dest(Config.html.dist));
 	});
 
@@ -55,9 +50,7 @@ function devLogic() {
 	    return gulp.src(Config.sass.src.logic, {base: 'src/scss'})
 	        .pipe(plumber())
 			.pipe(changed(Config.css.dist, {extension:'.css'}))
-	        .pipe(template({
-	            staticBase: '//weidian.com'
-	        }))
+	        .pipe(template(domainMap))
 	        .pipe(sass())
 	        .pipe(autoprefixer({
 	          browsers: ['> 1%'], // 主流浏览器的最新两个版本
@@ -71,9 +64,7 @@ function devLogic() {
 	    return gulp.src(Config.css.src, {base: 'src/css'})
 			.pipe(changed(Config.css.dist))
 	        .pipe(plumber())
-	        .pipe(template({
-	            staticBase: '//weidian.com'
-	        }))
+	        .pipe(template(domainMap))
 	        .pipe(autoprefixer({
 	          browsers: ['> 1%'], // 主流浏览器的最新两个版本
 	          cascade: false // 是否美化属性值
@@ -101,9 +92,7 @@ function devLogic() {
 	        .pipe(gulp.dest(Config.font.dist));
 	});
 
-	gulp.task('concat', function() {
-
-	});
+	gulp.task('concat', Utils.buildConcatTask());
 
 	gulp.task('watch', function() {
 		gulp.watch(Config.controller.src, gulp.series('controller'));
@@ -115,7 +104,7 @@ function devLogic() {
 		gulp.watch(Config.font.logic, gulp.series('font'));
 	});
 
-	gulp.task('default', gulp.series('del', gulp.parallel('controller', 'html', 'sass', 'css', 'js', 'img', 'font'), 'watch'));
+	gulp.task('local', gulp.series('del', gulp.parallel('controller', 'html', 'sass', 'css', 'js', 'img', 'font'), 'concat', 'watch'));
 };
 
 module.exports = devLogic;

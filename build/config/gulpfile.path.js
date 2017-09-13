@@ -1,4 +1,4 @@
-var Utils = require('./gulpfile.utils.js');  // 公有方法
+var Utils = require('../gulpfile.utils.js');  // 公有方法
 
 var SRC_DIR = 'src/';     // 源文件目录
 var DIST_DIR = './dist/';   // 文件处理后存放的目录
