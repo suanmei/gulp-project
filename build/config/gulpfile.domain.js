@@ -1,16 +1,16 @@
 module.exports = {
     "test": {
         "PubStaticBase": "/vshop/1/H5",
-        "staticBase": "/vshop/1/H5/<%= config.product %>",
-        "phpBase": "//wd<%= config.testServerIndex %>.test.weidian.com/p5/decorate",
-        "PubbaseUrl": "//wd<%= config.testServerIndex %>.test.weidian.com",
-        "baseUrl": "/p5/<%= config.product %>",
+        "staticBase": "/vshop/1/H5/<%= product %>",
+        "phpBase": "//wd<%= testServerIndex %>.test.weidian.com/p5/decorate",
+        "PubbaseUrl": "//wd<%= testServerIndex %>.test.weidian.com",
+        "baseUrl": "/p5/<%= product %>",
         "IMUrl": "//im.weidian.com",
         "IweidianUrl": "/p5/user",
         "H5Login": "//logintest.koudai.com",
         "H5WDLogin": "//login.weidian.com",
         "H5Trade": "//tradedev22.test.weidian.com",
-        "H5UDC": "//wd<%= config.testServerIndex %>.test.weidian.com",
+        "H5UDC": "//wd<%= testServerIndex %>.test.weidian.com",
         "H5ItemUDC": "",
         "H5VIPUDC": "",
         "H5Collect": "",
@@ -26,7 +26,7 @@ module.exports = {
         "CPSrecommend": "https://api-z.weidian.com",
         "H5Address": "",
         "SSO": "//sso-daily.test.weidian.com",
-        "H5Proxy": "//wdtestapi.weidian.com/wdh5proxy/h5/router/test<%= config.testServerIndex %>.do",
+        "H5Proxy": "//wdtestapi.weidian.com/wdh5proxy/h5/router/test<%= testServerIndex %>.do",
         "ServicesMarketApi": "//idc01-static-vip-09",
         "Vkeduo": "//wd86.test.weidian.com/p5/marketing_center_mobile",
         "wxSharecfg": "http://vap.gw.daily.weidian.com/h5/weixin/getjsconfig/1.0",
@@ -36,16 +36,16 @@ module.exports = {
 
         "serverUrl": "",
         "H5Port": "/vshop/1/H5",
-        "LANItem": "wd<%= config.testServerIndex %>.test.weidian.com",
-        "LANShop": "wd<%= config.testServerIndex %>.test.weidian.com",
-        "LANBaseShop": "wd<%= config.testServerIndex %>.test.weidian.com",
+        "LANItem": "wd<%= testServerIndex %>.test.weidian.com",
+        "LANShop": "wd<%= testServerIndex %>.test.weidian.com",
+        "LANBaseShop": "wd<%= testServerIndex %>.test.weidian.com",
         "LANBaseShop2": "10.1.122.100:8080",
-        "LANCollectShop": "wd<%= config.testServerIndex %>.test.weidian.com",
-        "LANCate": "wd<%= config.testServerIndex %>.test.weidian.com",
+        "LANCollectShop": "wd<%= testServerIndex %>.test.weidian.com",
+        "LANCate": "wd<%= testServerIndex %>.test.weidian.com",
         "LANProxy": "wdtestapi.weidian.com",
         "LANProxy2": "10.1.120.76:8080",
         "LANDecorateProxy": "idc02-test-decorateapi-vip00",
-        "LANProxyPath": "router/test<%= config.testServerIndex %>.do",
+        "LANProxyPath": "router/test<%= testServerIndex %>.do",
         "LANDiypage": "//idc02-test-decorateapi-vip00",
         "Tuan": "s.tuan.weidian.com",
         "VAP": "//vap.gw.pre.weidian.com",
@@ -55,15 +55,15 @@ module.exports = {
 
         "Proxy": "//test.m.koudai.com/ad/",
         "Proxy2": "//gw.test.weidian.com/h5",
-        "debugPort": "debug_port=test<%= config.testServerIndex %>",
-        "LANDebugPort": "test<%= config.testServerIndex %>",
+        "debugPort": "debug_port=test<%= testServerIndex %>",
+        "LANDebugPort": "test<%= testServerIndex %>",
         "ForumsApi": "http://test.m.weidian.com",
         "ForumsServerApi": "http://10.1.22.20:9019",
         "BusinessServerApi": "http://10.1.22.20:9019",
         "customerApi": "http://10.8.97.41:2850",
 
         "H5WASAPI": "http://was.test.weidian.com",
-        "H5OrderUDCPHP": "wd<%= config.testServerIndex %>.test.weidian.com",
+        "H5OrderUDCPHP": "wd<%= testServerIndex %>.test.weidian.com",
 
         "H5OrderUDCJAVA": "trade01.test.weidian.com",
         "H5OrderUDCJAVAHttp": "//trade01.test.weidian.com",
@@ -74,14 +74,15 @@ module.exports = {
 
         "PbjUDC": "http://10.1.22.20:9014",
         "PbjBaseUrl": "//wd4.test.weidian.com/mpwx",
+		"version": "",
         "env": "test"
     },
     "pre_product": {
         "PubStaticBase": "//s.geilicdn.com",
-        "staticBase": "//s.geilicdn.com/<%= config.product %>/<%= config.staticDir %>",
+        "staticBase": "//s.geilicdn.com/<%= product %>/<%= staticDir %>",
         "phpBase": "//weidian.com/p5/decorate",
         "PubbaseUrl": "//weidian.com",
-        "baseUrl": "//<%= config.domain %>weidian.com",
+        "baseUrl": "//weidian.com",
         "IMUrl": "//im.weidian.com",
         "IweidianUrl": "//i.weidian.com",
         "H5Login": "//login.koudai.com",
@@ -151,14 +152,15 @@ module.exports = {
 
         "PbjUDC": "//pbj-pre.test.weidian.com",
         "PbjBaseUrl": "//pbj.weidian.com",
+		"version": "",
         "env": "61"
     },
     "product": {
         "PubStaticBase": "//s.geilicdn.com",
-        "staticBase": "//s.geilicdn.com/<%= config.product %>/<%= config.staticDir %>",
+        "staticBase": "//s.geilicdn.com/<%= product %>/<%= staticDir %>",
         "phpBase": "//weidian.com/p5/decorate",
         "PubbaseUrl": "//weidian.com",
-        "baseUrl": "//<%= config.domain %>weidian.com",
+        "baseUrl": "//weidian.com",
         "IMUrl": "//im.weidian.com",
         "IweidianUrl": "//i.weidian.com",
         "H5Login": "//login.koudai.com",
@@ -229,6 +231,7 @@ module.exports = {
 
         "PbjUDC": "//pbj.api.weidian.com",
         "PbjBaseUrl": "//pbj.weidian.com",
+		"version": "",
         "env": ""
     }
 };

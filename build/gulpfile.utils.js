@@ -1,4 +1,4 @@
-var glob = require('glob')
+var glob = require('glob');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var merge = require('merge-stream');
@@ -9,18 +9,39 @@ var domainConfig = require('./config/gulpfile.domain.js');
 var SRC = 'src/';
 var	DIST = 'dist/';
 var env = gutil.env._[0];
+var now = new Date();
+var config = {
+	product: 'decorate',
+	localhost: env === 'local' ? '//me.weidian.com/gulp-project/dist' : '',
+	staticDir: '' + now.getFullYear() + (now.getMonth() + 1),
+	file: '' // gutil.template needs it
+};
 
 var Utils = {
-	extendBasePath: function(base, path) {
+	/**
+	 * 合成路径
+	 * @param {String} - 前置路径(n个)
+	 * @param {String | Array} - 匹配路径
+	 * @return {String | Array} - 拼接路径
+	 */
+	extendBasePath: function() {
+		var args = Array.prototype.slice.call(arguments),
+			base = args.slice(0, -1),
+			path = args[args.length - 1];
+
+		if (base.length === 0) {
+			return path;
+		}
+
 		if (typeof path === 'String') {
-			return base + path;
+			return base.join('') + path;
 		}
 
 		return path.map(function(value) {
 			if (~value.indexOf('!')) {
-				return '!' + base + value.slice(1);
+				return '!' + base.join('') + value.slice(1);
 			} else {
-				return base + value;
+				return base.join('') + value;
 			}
 		});
 	},
@@ -42,26 +63,36 @@ var Utils = {
 
 		return JSON.stringify(styleMap);
 	},
-	
 	/**
 	 * 生成域名映射
 	 * @return {Object} - 域名映射
 	 */
 	generateDomainMap: function() {
 		var environment = env,
+			testServerIndex,
 			domainMap;
 
 		if (env === 'local') {
 			environment = 'product';
+		} else if (~env.indexOf('test')) {
+			testServerIndex = environment.match(/\d+/)[0];
+			environment = 'test';
+			config.testServerIndex = testServerIndex;
 		}
 
-		environment = environment.replace(/\d/g, '');
 		domainMap = domainConfig[environment];
+		domainMap = gutil.template(JSON.stringify(domainMap), config);
+		domainMap = JSON.parse(domainMap)
+
+		if (env === 'local') {
+			domainMap.staticBase = config.localhost;
+			domainMap.serverUrl = 'http://me.weidian.com:9001';
+		}
 
 		// indexController needs templateMap
 		domainMap.templateMap = Utils.generateStyleMap(domainMap);
 
-		return domainConfig[environment];
+		return domainMap;
 	},
 	/**
 	 * 文件合并配置添加前置路径
@@ -70,12 +101,12 @@ var Utils = {
 	 */
 	generateConcatMap: function(pre, fileMaps) {
 		for (var i = 0; i < fileMaps.length; i++) {
-			fileMaps[i][1] = Utils.extendBasePath(pre, fileMap[1]);
+			fileMaps[i][1] = Utils.extendBasePath(pre, fileMaps[i][1]);
 		}
 	},
 	/**
 	 * 返回 concat 任务所需函数
-	 * @return {function} - 根据 gulpfile.concat.js 合并文件
+	 * @return {Function} - 根据 gulpfile.concat.js 合并文件
 	 */
 	buildConcatTask: function() {
 		return function() {

@@ -32,6 +32,8 @@ function devLogic() {
 	gulp.task('controller', function() {
 	    return gulp.src(Config.controller.src)
 			.pipe(changed(Config.controller.dist))
+			.pipe(plumber())
+			.pipe(template(domainMap))
 	        .pipe(gulp.dest(Config.controller.dist));
 	});
 
@@ -46,12 +48,23 @@ function devLogic() {
 	        .pipe(gulp.dest(Config.html.dist));
 	});
 
+	gulp.task('php', function() {
+	    return gulp.src(Config.php.src)
+			.pipe(changed(Config.php.dist))
+			.pipe(plumber())
+	        .pipe(fileinclude({
+		      basepath: Config.fileinclude.src
+		    }))
+			.pipe(template(domainMap))
+	        .pipe(gulp.dest(Config.php.dist));
+	});
+
 	gulp.task('sass', function() {
 	    return gulp.src(Config.sass.src.logic, {base: 'src/scss'})
 	        .pipe(plumber())
 			.pipe(changed(Config.css.dist, {extension:'.css'}))
-	        .pipe(template(domainMap))
 	        .pipe(sass())
+	        .pipe(template(domainMap))
 	        .pipe(autoprefixer({
 	          browsers: ['> 1%'], // 主流浏览器的最新两个版本
 	          cascade: false // 是否美化属性值
@@ -77,12 +90,14 @@ function devLogic() {
 	    return gulp.src(Config.js.src.logic, {base: 'src/js'})
 			.pipe(plumber())
 			.pipe(component())
+			.pipe(template(domainMap))
 	        .pipe(gulp.dest(Config.js.dist));
 	});
 
 	gulp.task('img', function() {
 	    return gulp.src(Config.img.src, {base: 'src/images'})
 			.pipe(changed(Config.img.dist))
+			.pipe(imagemin())
 	        .pipe(gulp.dest(Config.img.dist));
 	});
 
@@ -96,7 +111,7 @@ function devLogic() {
 
 	gulp.task('watch', function() {
 		gulp.watch(Config.controller.src, gulp.series('controller'));
-		gulp.watch(Config.html.src, gulp.series('html'));
+		gulp.watch(Config.php.src, gulp.series('php'));
 		gulp.watch(Config.css.src, gulp.series('css'));
 		gulp.watch(Config.js.src.logic, gulp.series('js'));
 	    gulp.watch(Config.sass.src.logic, gulp.series('sass'));
@@ -104,7 +119,7 @@ function devLogic() {
 		gulp.watch(Config.font.logic, gulp.series('font'));
 	});
 
-	gulp.task('local', gulp.series('del', gulp.parallel('controller', 'html', 'sass', 'css', 'js', 'img', 'font'), 'concat', 'watch'));
+	gulp.task('local', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'concat', 'watch'));
 };
 
 module.exports = devLogic;
