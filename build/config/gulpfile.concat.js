@@ -58,7 +58,6 @@ module.exports = {
             'js/common/doLogin.js',
             'js/common/cookie.js',
             'js/common/utils.js',
-            'js/common/timing.js',
             'js/common/preload.js',
             'js/common/flexible.js',
         ]],

@@ -9,19 +9,23 @@ var domainConfig = require('./config/gulpfile.domain.js');
 var SRC = 'src/';
 var	DIST = 'dist/';
 var env = gutil.env._[0];
+var isTemplate = gutil.env.t; // 构建模板
+var isAll = gutil.env.a; // 全部模板
+var templateName = gutil.env.template || 'default'; // 模板名
 var now = new Date();
 var config = {
 	product: 'decorate',
-	localhost: env === 'local' ? '//me.weidian.com/gulp-project/dist' : '',
+	localhost: (env === 'local' && !isTemplate)  ? '//me.weidian.com/gulp-project/dist' : '',
 	staticDir: '' + now.getFullYear() + (now.getMonth() + 1),
 	file: '' // gutil.template needs it
 };
 
 var Utils = {
+	isTemplate: isTemplate,
 	/**
 	 * 合成路径
-	 * @param {String} - 前置路径(n个)
-	 * @param {String | Array} - 匹配路径
+	 * @param  {String} - 前置路径(n个)
+	 * @param  {String | Array} - 匹配路径
 	 * @return {String | Array} - 拼接路径
 	 */
 	extendBasePath: function() {
@@ -44,6 +48,21 @@ var Utils = {
 				return base.join('') + value;
 			}
 		});
+	},
+	/**
+	 * 根据 task 类型获取对应的 js/css 文件路径
+	 * @param  {Object} fileMap - 文件路径存储对象
+	 * @return {Array} - task 对应文件匹配表达式
+	 */
+	getFilesByTask: function(fileMap) {
+		var key =
+			isTemplate ?
+				isAll ?
+					'allTemplate'
+				: 'template'
+			: 'logic';
+
+		return fileMap[key];
 	},
 	/**
 	 * 生成样式映射
@@ -87,6 +106,7 @@ var Utils = {
 		if (env === 'local') {
 			domainMap.staticBase = config.localhost;
 			domainMap.serverUrl = 'http://me.weidian.com:9001';
+			domainMap.templateName = templateName;
 		}
 
 		// indexController needs templateMap
@@ -97,7 +117,7 @@ var Utils = {
 	/**
 	 * 文件合并配置添加前置路径
 	 * @param  {String} pre - 前置路径
-	 * @param  {Array} fileConfig - 待合并文件集合
+	 * @param  {Array} fileMaps - 待合并文件集合
 	 */
 	generateConcatMap: function(pre, fileMaps) {
 		for (var i = 0; i < fileMaps.length; i++) {

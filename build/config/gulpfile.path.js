@@ -1,13 +1,23 @@
+var gutil = require('gulp-util');
 var Utils = require('../gulpfile.utils.js');  // 公有方法
 
+var templateName = gutil.env.template || 'default'; // 模板名
 var SRC_DIR = 'src/';     // 源文件目录
 var DIST_DIR = 'dist/';   // 文件处理后存放的目录
-var DIST_FILES = DIST_DIR + '**'; // 目标路径下的所有文件
+var SASSFILE = {
+	logic: ['**', '!common/**', '!base/**', '!components/**', '!index/**', 'index/default.scss'],
+	template: ['base/**', 'buy/**', 'components/custombar/normal.scss', 'index/' + templateName + '.scss', 'others/*'],
+	allTemplate: ['**']
+};
+var JSFILE = {
+	logic: ['**/*', '!theme/*', 'theme/default.js'],
+	template: ['common/**', 'index/**', 'components/**', 'theme/' + templateName + '.js'],
+	allTemplate: ['**']
+};
 
-var Config = {
+module.exports = {
     src: SRC_DIR,
     dist: DIST_DIR,
-    dist_files: DIST_FILES,
 	controller: {
 		src: SRC_DIR + 'controller/**/*.php',
         dist: DIST_DIR + 'controller'
@@ -23,35 +33,35 @@ var Config = {
 	fileinclude: {
 		src: SRC_DIR + 'pages/includes',
 	},
-    assets: {
-        src: SRC_DIR + 'assets/**/*',            // assets目录：./src/assets
-        dist: DIST_DIR + 'assets'                // assets文件build后存放的目录：./dist/assets
-    },
     css: {
-        src: SRC_DIR + 'css/**/*.css',           // CSS目录：./src/css/
-        dist: DIST_DIR + 'css'                   // CSS文件build后存放的目录：./dist/css
+        src: SRC_DIR + 'css/**/*.css',
+        dist: DIST_DIR + 'css'
     },
     sass: {
-        src: {
-			logic: Utils.extendBasePath(SRC_DIR, 'scss/', ['**/*.scss', '!common/**/*.scss', '!base/*.scss', '!index/*.scss', '!components/**/*.scss', '!index/**/*.scss', 'index/default.scss']),   // SASS目录：./src/sass/
-			template: SRC_DIR + 'sass/'
-		},
-        dist: DIST_DIR + 'css'                   // SASS文件生成CSS后存放的目录：./dist/css
+        src: Utils.extendBasePath(SRC_DIR, 'scss/', Utils.getFilesByTask(SASSFILE)),
+        dist: DIST_DIR + 'css'
     },
     js: {
-        src: {
-			logic: Utils.extendBasePath(SRC_DIR, 'js/', ['**/*.js', '!theme/*.js', 'theme/default.js'])
-		},           // JS目录：./src/js/
-        dist: DIST_DIR + 'js',                  // JS文件build后存放的目录：./dist/js
+        src: Utils.extendBasePath(SRC_DIR, 'js/', Utils.getFilesByTask(JSFILE)),
+        dist: DIST_DIR + 'js'
     },
     img: {
-        src: SRC_DIR + 'images/**/*',            // images目录：./src/images/
-		dist: DIST_DIR + 'images'                // images文件build后存放的目录：./dist/images
+        src: SRC_DIR + 'images/**',
+		dist: DIST_DIR + 'images'
     },
 	font: {
-		src: SRC_DIR + 'fonts/**/*',
+		src: SRC_DIR + 'fonts/**',
 		dist: DIST_DIR + 'fonts'
+	},
+	mock: {
+		src: SRC_DIR + 'mock/**',
+		dist: DIST_DIR + 'mock'
+	},
+	testData: {
+		src: SRC_DIR + 'test/**',
+		dist: DIST_DIR + 'test'
+	},
+	tpl: {
+		src: SRC_DIR + 'tpls/**'
 	}
 };
-
-module.exports = Config;
