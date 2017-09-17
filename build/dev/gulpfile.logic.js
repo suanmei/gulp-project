@@ -21,6 +21,7 @@ var component = require('gulp-component-inline');
 var gutil = require('gulp-util');
 var transport = require('gulp-cmd-transport');
 var gulpif = require('gulp-if');
+require('gulp-grunt')(gulp);
 
 var Config = require('../config/gulpfile.path.js');
 var Utils = require('../gulpfile.utils.js');
@@ -150,6 +151,8 @@ function devLogic() {
 			livereload: true
 		});
 	});
+
+	gulp.task('rev', gulp.series('grunt-filerev'));
 
 	gulp.task('watch', function() {
 		gulp.watch(Config.controller.src, gulp.series('controller'));
