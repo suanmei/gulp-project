@@ -9,7 +9,10 @@
     "eslint": "^3.9.0",
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-import": "^2.3.0",
+    "grunt-concat-seajs": "^1.0.23",
+    "grunt-contrib-concat": "^1.0.1",
     "grunt-filerev": "^2.3.1",
+    "grunt-usemin": "^3.1.1",
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-changed": "^3.1.0",
@@ -36,7 +39,8 @@
     "gulp-uglify": "^3.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"product": "gulp product"
   },
   "keywords": [
     "gulp"

@@ -21,7 +21,7 @@ var component = require('gulp-component-inline');
 var gutil = require('gulp-util');
 var transport = require('gulp-cmd-transport');
 var gulpif = require('gulp-if');
-require('gulp-grunt')(gulp);
+require('gulp-grunt')(gulp, {verbose: true});
 
 var Config = require('../config/gulpfile.path.js');
 var Utils = require('../gulpfile.utils.js');
@@ -152,7 +152,7 @@ function devLogic() {
 		});
 	});
 
-	gulp.task('rev', gulp.series('grunt-filerev'));
+	gulp.task('rev', gulp.series('grunt-userev' + Utils.env));
 
 	gulp.task('watch', function() {
 		gulp.watch(Config.controller.src, gulp.series('controller'));
@@ -169,7 +169,7 @@ function devLogic() {
 		return;
 	}
 
-	gulp.task('local', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'watch'));
+	gulp.task('product', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'rev'));
 };
 
 module.exports = devLogic;

@@ -1,5 +1,6 @@
 var glob = require('glob');
 var gulp = require('gulp');
+var path = require('path');
 var gutil = require('gulp-util');
 var merge = require('merge-stream');
 var concat = require('gulp-concat');
@@ -21,6 +22,8 @@ var config = {
 };
 
 var Utils = {
+	env: env,
+	config: config,
 	isTemplate: isTemplate,
 	/**
 	 * 合成路径
@@ -91,6 +94,8 @@ var Utils = {
 			testServerIndex,
 			domainMap;
 
+		console.log(env);
+
 		if (env === 'local') {
 			environment = 'product';
 		} else if (~env.indexOf('test')) {
@@ -106,8 +111,9 @@ var Utils = {
 		if (env === 'local') {
 			domainMap.staticBase = config.localhost;
 			domainMap.serverUrl = 'http://me.weidian.com:9001';
-			domainMap.templateName = templateName;
 		}
+
+		isTemplate && (domainMap.templateName = templateName);
 
 		// indexController needs templateMap
 		domainMap.templateMap = Utils.generateStyleMap(domainMap);
@@ -115,7 +121,7 @@ var Utils = {
 		return domainMap;
 	},
 	/**
-	 * 文件合并配置添加前置路径
+	 * 文件合并配置添加前置路径 -- gulp
 	 * @param  {String} pre - 前置路径
 	 * @param  {Array} fileMaps - 待合并文件集合
 	 */
@@ -145,7 +151,181 @@ var Utils = {
 
 			return merge(tasks);
 		}
-	}
+	},
+	/**
+	 * 生成 concat 合并配置 -- grunt
+	 * @return {[type]} [description]
+	 */
+	generateConcatMap_Grunt: function() {
+        concatConfig = (function generalConcatFiles(pre, files) {
+            var conf = {};
+            if (pre && files) {
+                files.forEach(function (value) {
+                    conf[path.join(pre, value[0])] = value[1].map(function (f) {
+                        return path.join(pre, f);
+                    });
+                });
+            }
+            return conf;
+        })(concatConfig.pre, concatConfig.files);
+
+		return concatConfig;
+	},
+	/**
+	 * 生成 usemin 配置参数
+	 * @return {[Object} - usemin 配置项
+	 */
+	getServerUseminConfig: function(serverName) {
+        if (serverName && serverName.match(/test(\d*)/)) {
+            var generalReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
+                cssReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
+            return {
+                html: DIST + '**/*.php',
+                css: DIST + '**/*.css',
+                js: DIST + '**/*.js',
+                options: {
+                    assetsDirs: [DIST],
+                    patterns: {
+                        html: [
+                            [
+                                generalReg,
+                                'view match',
+                                function (m) {
+                                    return m.replace('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ],
+                        js: [
+                            [
+                                cssReg,
+                                'js match',
+                                function (m) {
+                                    return m.replace('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ],
+                        css: [
+                            [
+                                cssReg,
+                                'css match',
+                                function (m) {
+                                    return m.replace('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ]
+                    }
+                }
+            };
+        }
+        if (['https'].indexOf(serverName) != -1) {
+            var generalReg = new RegExp('\/\/s.test.weidian.com\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
+                cssReg = new RegExp('\/\/s.test.weidian.com\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
+            return {
+                html: DIST + '/**/*.php',
+                css: DIST + '/**/*.css',
+                js: DIST + '/**/*.js',
+                options: {
+                    assetsDirs: [DIST],
+                    patterns: {
+                        html: [
+                            [
+                                generalReg,
+                                'view match',
+                                function (m) {
+                                    return m.replace('\/\/s.test.weidian.com\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ],
+                        js: [
+                            [
+                                cssReg,
+                                'js match',
+                                function (m) {
+                                    return m.replace('\/\/s.test.weidian.com\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ],
+                        css: [
+                            [
+                                cssReg,
+                                'css match',
+                                function (m) {
+                                    return m.replace('\/\/s.test.weidian.com\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ]
+                    }
+                }
+            }
+        } else if (['product', 'pre_product'].indexOf(serverName) != -1) {
+            var generalReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
+                cssReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
+            return {
+                html: DIST + '/**/*.php',
+                css: DIST + '/**/*.css',
+                js: DIST + '/**/*.js',
+                options: {
+                    assetsDirs: [DIST],
+                    patterns: {
+                        html: [
+                            [
+                                generalReg,
+                                'view match',
+                                function (m) {
+                                    return m.replace('\/\/s.geilicdn.com\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ],
+                        js: [
+                            [
+                                cssReg,
+                                'js match',
+                                function (m) {
+                                    return m.replace('\/\/s.geilicdn.com\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ],
+                        css: [
+                            [
+                                cssReg,
+                                'css match',
+                                function (m) {
+                                    return m.replace('\/\/s.geilicdn.com\/decorate\/' + config.staticDir, '');
+                                },
+                                function (m) {
+                                    return m;
+                                }
+                            ]
+                        ]
+                    }
+                }
+            }
+        }
+    }
 }
 
 module.exports = Utils;
