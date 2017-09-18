@@ -170,7 +170,7 @@ function devLogic() {
 		return;
 	}
 
-	gulp.task('product', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'rev'));
+	gulp.task('local', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'watch'));
 };
 
 module.exports = devLogic;
