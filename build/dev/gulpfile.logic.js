@@ -21,11 +21,12 @@ var component = require('gulp-component-inline');
 var gutil = require('gulp-util');
 var transport = require('gulp-cmd-transport');
 var gulpif = require('gulp-if');
-require('gulp-grunt')(gulp, {verbose: true});
+require('gulp-grunt')(gulp);
 
 var Config = require('../config/gulpfile.path.js');
 var Utils = require('../gulpfile.utils.js');
 var domainMap = Utils.generateDomainMap();
+var isTemplate = Utils.getEnvValue('t');
 
 function devLogic() {
 	gulp.task('del', function(done) {
@@ -77,7 +78,7 @@ function devLogic() {
 			// 	merge: true
 			// }))
 			// .pipe(gulp.dest(Config.js.dist))
-			.pipe(gulpif(Utils.isTemplate, connect.reload()));
+			.pipe(gulpif(isTemplate, connect.reload()));
 	});
 
 	gulp.task('sass', function() {
@@ -92,7 +93,7 @@ function devLogic() {
 	        }))
 	        // .pipe(minifyCSS())
 	        .pipe(gulp.dest(Config.css.dist))
-			.pipe(gulpif(Utils.isTemplate, connect.reload()));
+			.pipe(gulpif(isTemplate, connect.reload()));
 	});
 
 	gulp.task('css', function() {
@@ -116,14 +117,14 @@ function devLogic() {
 			.pipe(changed(Config.img.dist))
 			// .pipe(imagemin())
 	        .pipe(gulp.dest(Config.img.dist))
-			.pipe(gulpif(Utils.isTemplate, connect.reload()));
+			.pipe(gulpif(isTemplate, connect.reload()));
 	});
 
 	gulp.task('font', function() {
 	    return gulp.src(Config.font.src, {base: 'src/fonts'})
 			.pipe(changed(Config.font.dist))
 	        .pipe(gulp.dest(Config.font.dist))
-			.pipe(gulpif(Utils.isTemplate, connect.reload()));
+			.pipe(gulpif(isTemplate, connect.reload()));
 	});
 
 	gulp.task('mock', function() {
@@ -152,7 +153,7 @@ function devLogic() {
 		});
 	});
 
-	gulp.task('rev', gulp.series('grunt-userev' + Utils.env));
+	gulp.task('rev', gulp.series('grunt-userev'));
 
 	gulp.task('watch', function() {
 		gulp.watch(Config.controller.src, gulp.series('controller'));
@@ -164,7 +165,7 @@ function devLogic() {
 		gulp.watch(Config.font.src, gulp.series('font'));
 	});
 
-	if (Utils.isTemplate) {
+	if (isTemplate) {
 		gulp.task('local', gulp.series('del', gulp.parallel('img', 'sass', 'js', 'font', 'mock', 'html'), gulp.parallel('connect', 'watch')));
 		return;
 	}

@@ -2,17 +2,14 @@ module.exports = function (grunt) {
 	var path = require('path');
 	var Utils = require('./build/gulpfile.utils.js');
 	var domainConfig = require('./build/config/gulpfile.domain.js');
-	var serverName = String(grunt.cli.tasks[0]).replace('userev', '');
 
-	var config = Utils.config;
-	var staticBase = domainConfig[serverName];
-	var useminConfig = Utils.getServerUseminConfig(serverName);
+	var env = Utils.getEnvValue('env');
+	var staticBaseURL = Utils.generateDomainMap().staticBase
+	var useminConfig = Utils.getServerUseminConfig();
 	var concatConfig = Utils.generateConcatMap_Grunt();
 	var	DIST = 'dist/';
 
 	grunt.initConfig({
-		product: config.product,
-		staticDir: config.staticDir,
 		concat: {
             main: {
                 files: concatConfig
@@ -32,7 +29,7 @@ module.exports = function (grunt) {
             options: {
                 baseDir: DIST,
                 seajs_src: path.join(DIST, 'js/common/'),
-                cdnBase: staticBase,
+                cdnBase: staticBaseURL,
                 //map_file_name: 'fetch.js',
                 injectFetch: true, //选择生成js文件，还是嵌入到html
                 injectSea: true, //选择生成js文件，还是嵌入到html
@@ -75,7 +72,7 @@ module.exports = function (grunt) {
 		usemin: useminConfig
 	});
 
-	grunt.registerTask('userev' + serverName, ['concat', 'filerev', 'concat_seajs', 'usemin']);
+	grunt.registerTask('userev', ['concat', 'filerev', 'concat_seajs', 'usemin']);
 
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-filerev');

@@ -4,15 +4,15 @@ var path = require('path');
 var gutil = require('gulp-util');
 var merge = require('merge-stream');
 var concat = require('gulp-concat');
-
 var concatConfig = require('./config/gulpfile.concat.js');
 var domainConfig = require('./config/gulpfile.domain.js');
 var SRC = 'src/';
 var	DIST = 'dist/';
-var env = gutil.env._[0];
-var isTemplate = gutil.env.t; // 构建模板
-var isAll = gutil.env.a; // 全部模板
-var templateName = gutil.env.template || 'default'; // 模板名
+
+var env = getEnvValue('env');
+var isTemplate = getEnvValue('t'); // 构建模板
+var isAll = getEnvValue('a'); // 全部模板
+var templateName = getEnvValue('template') || 'default'; // 模板名
 var now = new Date();
 var config = {
 	product: 'decorate',
@@ -21,10 +21,30 @@ var config = {
 	file: '' // gutil.template needs it
 };
 
+/**
+ * 获取环境变量值
+ * @param  {String} param - 变量名
+ * @return {String | Boolean} - 变量值
+ */
+function getEnvValue(param) {
+	var args = JSON.parse(process.env.npm_config_argv).original,
+		arg;
+
+	if (param === 'env') {
+		return args[1];
+	}
+
+	for (var i = 2; i < args.length; i++) {
+		arg = args[i].split('=');
+		if (arg[0] === ('--' + param)) {
+			return arg[1] ? arg[1] : true;
+		}
+	}
+	return '';
+}
+
 var Utils = {
-	env: env,
-	config: config,
-	isTemplate: isTemplate,
+	getEnvValue: getEnvValue,
 	/**
 	 * 合成路径
 	 * @param  {String} - 前置路径(n个)
@@ -93,8 +113,6 @@ var Utils = {
 		var environment = env,
 			testServerIndex,
 			domainMap;
-
-		console.log(env);
 
 		if (env === 'local') {
 			environment = 'product';
@@ -175,8 +193,8 @@ var Utils = {
 	 * 生成 usemin 配置参数
 	 * @return {[Object} - usemin 配置项
 	 */
-	getServerUseminConfig: function(serverName) {
-        if (serverName && serverName.match(/test(\d*)/)) {
+	getServerUseminConfig: function() {
+        if (env && env.match(/test(\d*)/)) {
             var generalReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
                 cssReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
             return {
@@ -225,57 +243,7 @@ var Utils = {
                     }
                 }
             };
-        }
-        if (['https'].indexOf(serverName) != -1) {
-            var generalReg = new RegExp('\/\/s.test.weidian.com\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
-                cssReg = new RegExp('\/\/s.test.weidian.com\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
-            return {
-                html: DIST + '/**/*.php',
-                css: DIST + '/**/*.css',
-                js: DIST + '/**/*.js',
-                options: {
-                    assetsDirs: [DIST],
-                    patterns: {
-                        html: [
-                            [
-                                generalReg,
-                                'view match',
-                                function (m) {
-                                    return m.replace('\/\/s.test.weidian.com\/decorate\/' + config.staticDir, '');
-                                },
-                                function (m) {
-                                    return m;
-                                }
-                            ]
-                        ],
-                        js: [
-                            [
-                                cssReg,
-                                'js match',
-                                function (m) {
-                                    return m.replace('\/\/s.test.weidian.com\/decorate\/' + config.staticDir, '');
-                                },
-                                function (m) {
-                                    return m;
-                                }
-                            ]
-                        ],
-                        css: [
-                            [
-                                cssReg,
-                                'css match',
-                                function (m) {
-                                    return m.replace('\/\/s.test.weidian.com\/decorate\/' + config.staticDir, '');
-                                },
-                                function (m) {
-                                    return m;
-                                }
-                            ]
-                        ]
-                    }
-                }
-            }
-        } else if (['product', 'pre_product'].indexOf(serverName) != -1) {
+        } else if (['product', 'pre_product'].indexOf(env) != -1) {
             var generalReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
                 cssReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
             return {
