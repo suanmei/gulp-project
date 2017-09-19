@@ -1,5 +1,5 @@
-module.exports = {
-    pre: 'dist/',
+export default {
+    pre: 'dev/',
     //item : 43个js
     files: [
         //首屏加载阻塞js

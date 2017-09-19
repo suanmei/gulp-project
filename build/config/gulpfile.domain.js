@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     "test": {
         "PubStaticBase": "/vshop/1/H5",
         "staticBase": "/vshop/1/H5/<%= product %>",
