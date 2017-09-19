@@ -4,13 +4,15 @@ var path = require('path');
 var gutil = require('gulp-util');
 var concatConfig = require('./config/gulpfile.concat.js');
 var domainConfig = require('./config/gulpfile.domain.js');
-var SRC = 'src/';
-var	DIST = 'dev/';
 
 var env = getEnvValue('env');
 var isTemplate = getEnvValue('t'); // 构建模板
 var isAll = getEnvValue('a'); // 全部模板
 var templateName = getEnvValue('template') || 'default'; // 模板名
+env = env === 'watch' ? 'local' : env;
+
+var SRC = 'src/';
+var	DIST = 'dev/';
 var now = new Date();
 var config = {
 	product: 'decorate',

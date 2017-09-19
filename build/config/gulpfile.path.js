@@ -19,14 +19,17 @@ module.exports = {
     dev: DEV_DIR,
 	controller: {
 		src: SRC_DIR + 'controller/**/*.php',
+		watch: SRC_DIR + 'controller/**',
         dev: DEV_DIR + 'controller'
 	},
     html: {
         src: SRC_DIR + 'html/*.html',
+		watch: SRC_DIR + 'html/**',
         dev: DEV_DIR + 'html'
     },
     php: {
         src: SRC_DIR + 'pages/**/*.php',
+		watch: SRC_DIR + 'php/**',
         dev: DEV_DIR + 'pages'
     },
 	fileinclude: {
@@ -34,33 +37,41 @@ module.exports = {
 	},
     css: {
         src: SRC_DIR + 'css/**/*.css',
+		watch: SRC_DIR + 'css/**',
         dev: DEV_DIR + 'css'
     },
     sass: {
         src: Utils.extendBasePath(SRC_DIR, 'scss/', Utils.getFilesByTask(SASSFILE)),
+		watch: SRC_DIR + 'scss/**',
         dev: DEV_DIR + 'css'
     },
     js: {
         src: Utils.extendBasePath(SRC_DIR, 'js/', Utils.getFilesByTask(JSFILE)),
+		watch: SRC_DIR + 'js/**',
         dev: DEV_DIR + 'js'
     },
     img: {
         src: SRC_DIR + 'images/**',
+		watch: SRC_DIR + 'images/**',
 		dev: DEV_DIR + 'images'
     },
 	font: {
 		src: SRC_DIR + 'fonts/**',
+		watch: SRC_DIR + 'fonts/**',
 		dev: DEV_DIR + 'fonts'
 	},
 	mock: {
 		src: SRC_DIR + 'mock/**',
+		watch: SRC_DIR + 'mock/**',
 		dev: DEV_DIR + 'mock'
 	},
 	testData: {
 		src: SRC_DIR + 'test/**',
+		watch: SRC_DIR + 'test/**',
 		dev: DEV_DIR + 'test'
 	},
 	tpl: {
-		src: SRC_DIR + 'tpls/**'
+		src: SRC_DIR + 'tpls/**',
+		watch: SRC_DIR + 'tpls/**',
 	}
 };
