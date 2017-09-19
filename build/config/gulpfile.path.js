@@ -1,20 +1,20 @@
-import Utils from '../gulpfile.utils.js';  // 公有方法
+var Utils = require('../gulpfile.utils.js');  // 公有方法
 
-let templateName = Utils.getEnvValue('template') || 'default'; // 模板名
-let SRC_DIR = 'src/';     // 源文件目录
-let DEV_DIR = 'dev/';   // 文件处理后存放的目录
-let SASSFILE = {
+var templateName = Utils.getEnvValue('template') || 'default'; // 模板名
+var SRC_DIR = 'src/';     // 源文件目录
+var DEV_DIR = 'dev/';   // 文件处理后存放的目录
+var SASSFILE = {
 	logic: ['**', '!common/**', '!base/**', '!components/**', '!index/**', 'index/default.scss'],
 	template: ['base/**', 'buy/**', 'components/custombar/normal.scss', 'index/' + templateName + '.scss', 'others/*'],
 	allTemplate: ['**']
 };
-let JSFILE = {
+var JSFILE = {
 	logic: ['**/*', '!theme/*', 'theme/default.js'],
 	template: ['common/**', 'index/**', 'components/**', 'theme/' + templateName + '.js'],
 	allTemplate: ['**']
 };
 
-export default {
+module.exports = {
     src: SRC_DIR,
     dev: DEV_DIR,
 	controller: {

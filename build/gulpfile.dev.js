@@ -21,12 +21,13 @@ import component from 'gulp-component-inline';
 import gutil from 'gulp-util';
 import transport from 'gulp-cmd-transport';
 import gulpif from 'gulp-if';
-require('gulp-grunt')(gulp);
-
-import pathConfig from './config/gulpfile.path.js';
+import gulpgrunt from 'gulp-grunt';
 import Utils from './gulpfile.utils.js';
 const domainMap = Utils.generateDomainMap();
 const isTemplate = Utils.getEnvValue('t');
+var pathConfig = require('./config/gulpfile.path.js');
+
+gulpgrunt(gulp);
 
 export default function devTask() {
 	gulp.task('del', done => {

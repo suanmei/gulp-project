@@ -1,22 +1,20 @@
-import glob from 'glob';
-import gulp from 'gulp';
-import path from 'path';
-import gutil from 'gulp-util';
-import merge from 'merge-stream';
-import concat from 'gulp-concat';
-import concatMap from './config/gulpfile.concat.js';
-import domainConfig from './config/gulpfile.domain.js';
+var glob = require('glob');
+var gulp = require('gulp');
+var path = require('path');
+var gutil = require('gulp-util');
+var merge = require('merge-stream');
+var concat = require('gulp-concat');
+var concatConfig = require('./config/gulpfile.concat.js');
+var domainConfig = require('./config/gulpfile.domain.js');
+var SRC = 'src/';
+var	DIST = 'dev/';
 
-const src = 'src/';
-const dev = 'dev/';
-const env = getEnvValue('env');
-const isTemplate = getEnvValue('t'); // 构建模板名
-const isAll = getEnvValue('a'); // 全部模板
-const templateName = getEnvValue('template') || 'default'; // 模板名
-const now = new Date();
-
-let concatConfig = concatMap;
-let config = {
+var env = getEnvValue('env');
+var isTemplate = getEnvValue('t'); // 构建模板
+var isAll = getEnvValue('a'); // 全部模板
+var templateName = getEnvValue('template') || 'default'; // 模板名
+var now = new Date();
+var config = {
 	product: 'decorate',
 	localhost: (env === 'local' && !isTemplate)  ? '//me.weidian.com/gulp-project/dev' : '',
 	staticDir: '' + now.getFullYear() + (now.getMonth() + 1),
@@ -29,23 +27,23 @@ let config = {
  * @return {String | Boolean} - 变量值
  */
 function getEnvValue(param) {
-	let args = JSON.parse(process.env.npm_config_argv).original,
+	var args = JSON.parse(process.env.npm_config_argv).original,
 		arg;
 
 	if (param === 'env') {
 		return args[1];
 	}
 
-	for (let i = 2; i < args.length; i++) {
+	for (var i = 2; i < args.length; i++) {
 		arg = args[i].split('=');
 		if (arg[0] === ('--' + param)) {
 			return arg[1] ? arg[1] : true;
 		}
 	}
-	return false;
+	return '';
 }
 
-export default {
+var Utils = {
 	getEnvValue: getEnvValue,
 	/**
 	 * 合成路径
@@ -54,7 +52,7 @@ export default {
 	 * @return {String | Array} - 拼接路径
 	 */
 	extendBasePath: function() {
-		let args = Array.prototype.slice.call(arguments),
+		var args = Array.prototype.slice.call(arguments),
 			base = args.slice(0, -1),
 			path = args[args.length - 1];
 
@@ -80,7 +78,7 @@ export default {
 	 * @return {Array} - task 对应文件匹配表达式
 	 */
 	getFilesByTask: function(fileMap) {
-		let key =
+		var key =
 			isTemplate ?
 				isAll ?
 					'allTemplate'
@@ -95,12 +93,12 @@ export default {
 	 * @return {Object} - 样式映射
 	 */
 	generateStyleMap: function(domainMap) {
-		let reg = /src\/scss\/index\/(.*)\.scss/,
+		var reg = /src\/scss\/index\/(.*)\.scss/,
 			styleFiles = glob.sync("src/scss/index/*.scss"),
 			styleMap = {},
 			result;
 
-		for (let i = 0; i < styleFiles.length; i++) {
+		for (var i = 0; i < styleFiles.length; i++) {
 			result = styleFiles[i].match(reg)[1];
 			styleMap[result] = domainMap.staticBase + '/css/index/' + result + '.css';
 		}
@@ -112,7 +110,7 @@ export default {
 	 * @return {Object} - 域名映射
 	 */
 	generateDomainMap: function() {
-		let environment = env,
+		var environment = env,
 			testServerIndex,
 			domainMap;
 
@@ -136,7 +134,7 @@ export default {
 		isTemplate && (domainMap.templateName = templateName);
 
 		// indexController needs templateMap
-		domainMap.templateMap = this.generateStyleMap(domainMap);
+		domainMap.templateMap = Utils.generateStyleMap(domainMap);
 
 		return domainMap;
 	},
@@ -146,8 +144,8 @@ export default {
 	 * @param  {Array} fileMaps - 待合并文件集合
 	 */
 	generateConcatMap: function(pre, fileMaps) {
-		for (let i = 0; i < fileMaps.length; i++) {
-			fileMaps[i][1] = this.extendBasePath(pre, fileMaps[i][1]);
+		for (var i = 0; i < fileMaps.length; i++) {
+			fileMaps[i][1] = Utils.extendBasePath(pre, fileMaps[i][1]);
 		}
 	},
 	/**
@@ -156,14 +154,14 @@ export default {
 	 */
 	buildConcatTask: function() {
 		return function() {
-			let pre = concatConfig.pre,
+			var pre = concatConfig.pre,
 				files = concatConfig.files,
 				tasks;
 
-			this.generateConcatMap(pre, files);
+			Utils.generateConcatMap(pre, files);
 
 			tasks = concatConfig.files.map(function(mapping) {
-				let dist = mapping[2] ? pre + mapping[2] : pre + 'js/';
+				var dist = mapping[2] ? pre + mapping[2] : pre + 'js/';
 				return gulp.src(mapping[1])
 					.pipe(concat(mapping[0]))
 					.pipe(gulp.dest(dist));
@@ -178,7 +176,7 @@ export default {
 	 */
 	generateConcatMap_Grunt: function() {
         concatConfig = (function generalConcatFiles(pre, files) {
-            let conf = {};
+            var conf = {};
             if (pre && files) {
                 files.forEach(function (value) {
                     conf[path.join(pre, value[0])] = value[1].map(function (f) {
@@ -197,14 +195,14 @@ export default {
 	 */
 	getServerUseminConfig: function() {
         if (env && env.match(/test(\d*)/)) {
-            let generalReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
+            var generalReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
                 cssReg = new RegExp('\/\/wd[\d]+.test.weidian.com\/vshop\/1\/H5\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
             return {
-                html: dev + '**/*.php',
-                css: dev + '**/*.css',
-                js: dev + '**/*.js',
+                html: DIST + '**/*.php',
+                css: DIST + '**/*.css',
+                js: DIST + '**/*.js',
                 options: {
-                    assetsDirs: [dev],
+                    assetsDirs: [DIST],
                     patterns: {
                         html: [
                             [
@@ -246,14 +244,14 @@ export default {
                 }
             };
         } else if (['product', 'pre_product'].indexOf(env) != -1) {
-            let generalReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
+            var generalReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '(([^"\']+))', 'gm'),
                 cssReg = new RegExp('\/\/s.geilicdn.com\/decorate\/' + config.staticDir + '((([^"\)\']))*)', 'gm');
             return {
-                html: dev + '/**/*.php',
-                css: dev + '/**/*.css',
-                js: dev + '/**/*.js',
+                html: DIST + '/**/*.php',
+                css: DIST + '/**/*.css',
+                js: DIST + '/**/*.js',
                 options: {
-                    assetsDirs: [DEV],
+                    assetsDirs: [DIST],
                     patterns: {
                         html: [
                             [
@@ -297,3 +295,5 @@ export default {
         }
     }
 }
+
+module.exports = Utils;

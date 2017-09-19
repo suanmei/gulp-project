@@ -1,14 +1,13 @@
-import path from 'path';
-import Utils from './build/gulpfile.utils.js';
-import domainConfig from './build/config/gulpfile.domain.js';
-
 module.exports = function (grunt) {
-	const dev = 'dev/';
-	
-	let env = Utils.getEnvValue('env');
-	let staticBaseURL = Utils.generateDomainMap().staticBase
-	let useminConfig = Utils.getServerUseminConfig();
-	let concatConfig = Utils.generateConcatMap_Grunt();
+	var path = require('path');
+	var Utils = require('./build/gulpfile.utils.js');
+	var domainConfig = require('./build/config/gulpfile.domain.js');
+
+	var env = Utils.getEnvValue('env');
+	var staticBaseURL = Utils.generateDomainMap().staticBase
+	var useminConfig = Utils.getServerUseminConfig();
+	var concatConfig = Utils.generateConcatMap_Grunt();
+	var	DIST = 'dev/';
 
 	grunt.initConfig({
 		concat: {
@@ -20,43 +19,43 @@ module.exports = function (grunt) {
 			main: {
 				files: [{
 					expand: true,
-					cwd: dev,
+					cwd: DIST,
 					src: ['**/*.js', '**/*.css', '**/*.{png,jpg,jpeg,gif}'],
-					dest: dev
+					dest: DIST
 				}]
 			}
 		},
 		concat_seajs: {
             options: {
-                baseDir: dev,
-                seajs_src: path.join(dev, 'js/common/'),
+                baseDir: DIST,
+                seajs_src: path.join(DIST, 'js/common/'),
                 cdnBase: staticBaseURL,
                 //map_file_name: 'fetch.js',
                 injectFetch: true, //选择生成js文件，还是嵌入到html
                 injectSea: true, //选择生成js文件，还是嵌入到html
                 map: [
                     {
-                        'dest': path.join(dev, 'pages/template/index/default.tpl.php'),
+                        'dest': path.join(DIST, 'pages/template/index/default.tpl.php'),
                         'files': [
-                            path.join(dev, 'js/firstCommon.min.js')
+                            path.join(DIST, 'js/firstCommon.min.js')
                         ]
                     },
                     {
-                        'dest': path.join(dev, 'pages/template/index.php'),
+                        'dest': path.join(DIST, 'pages/template/index.php'),
                         'files': [
-                            path.join(dev, 'js/firstCommon.min.js')
+                            path.join(DIST, 'js/firstCommon.min.js')
                         ]
                     },
                     {
-                        'dest': path.join(dev, 'pages/template/index/personal.tpl.php'),
+                        'dest': path.join(DIST, 'pages/template/index/personal.tpl.php'),
                         'files': [
-                            path.join(dev, 'js/firstCommon.min.js')
+                            path.join(DIST, 'js/firstCommon.min.js')
                         ]
                     },
                     {
-                        'dest': path.join(dev, 'pages/template/index/supermarket.tpl.php'),
+                        'dest': path.join(DIST, 'pages/template/index/supermarket.tpl.php'),
                         'files': [
-                            path.join(dev, 'js/firstCommon.min.js')
+                            path.join(DIST, 'js/firstCommon.min.js')
                         ]
                     }
                 ]
@@ -64,7 +63,7 @@ module.exports = function (grunt) {
             main: {
                 files: [{
                     expand: true,
-                    cwd: dev,
+                    cwd: DIST,
                     injectSea: true,
                     src: ['**/*.html', '**/*.php']
                 }]

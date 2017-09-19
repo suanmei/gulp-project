@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     pre: 'dev/',
     //item : 43个js
     files: [
