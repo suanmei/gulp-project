@@ -10,7 +10,6 @@ import changed from 'gulp-changed';
 import debug from 'gulp-debug';
 import sourcemaps from 'gulp-sourcemaps';
 import del from 'del';
-import rev from 'gulp-rev';
 import notify from 'gulp-notify';
 import eslint from 'gulp-eslint';
 import autoprefixer from 'gulp-autoprefixer';
@@ -18,7 +17,6 @@ import fileinclude from 'gulp-file-include';
 import template from 'gulp-template';
 import plumber from 'gulp-plumber';
 import component from 'gulp-component-inline';
-import gutil from 'gulp-util';
 import transport from 'gulp-cmd-transport';
 import gulpif from 'gulp-if';
 import gulpgrunt from 'gulp-grunt';
@@ -143,8 +141,6 @@ export default function devTask() {
 	        .pipe(gulp.dest(pathConfig.testData.dev))
 			.pipe(connect.reload());
 	});
-
-	gulp.task('concat', Utils.buildConcatTask());
 
 	gulp.task('connect', () => {
 		connect.server({

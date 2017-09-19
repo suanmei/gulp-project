@@ -2,8 +2,6 @@ var glob = require('glob');
 var gulp = require('gulp');
 var path = require('path');
 var gutil = require('gulp-util');
-var merge = require('merge-stream');
-var concat = require('gulp-concat');
 var concatConfig = require('./config/gulpfile.concat.js');
 var domainConfig = require('./config/gulpfile.domain.js');
 var SRC = 'src/';
@@ -137,38 +135,6 @@ var Utils = {
 		domainMap.templateMap = Utils.generateStyleMap(domainMap);
 
 		return domainMap;
-	},
-	/**
-	 * 文件合并配置添加前置路径 -- gulp
-	 * @param  {String} pre - 前置路径
-	 * @param  {Array} fileMaps - 待合并文件集合
-	 */
-	generateConcatMap: function(pre, fileMaps) {
-		for (var i = 0; i < fileMaps.length; i++) {
-			fileMaps[i][1] = Utils.extendBasePath(pre, fileMaps[i][1]);
-		}
-	},
-	/**
-	 * 返回 concat 任务所需函数
-	 * @return {Function} - 根据 gulpfile.concat.js 合并文件
-	 */
-	buildConcatTask: function() {
-		return function() {
-			var pre = concatConfig.pre,
-				files = concatConfig.files,
-				tasks;
-
-			Utils.generateConcatMap(pre, files);
-
-			tasks = concatConfig.files.map(function(mapping) {
-				var dist = mapping[2] ? pre + mapping[2] : pre + 'js/';
-				return gulp.src(mapping[1])
-					.pipe(concat(mapping[0]))
-					.pipe(gulp.dest(dist));
-			});
-
-			return merge(tasks);
-		}
 	},
 	/**
 	 * 生成 concat 合并配置 -- grunt
