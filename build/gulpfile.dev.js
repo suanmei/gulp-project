@@ -7,7 +7,6 @@ import plumber from 'gulp-plumber';
 import connect from "gulp-connect";
 import changed from 'gulp-changed';
 import template from 'gulp-template';
-import gulpgrunt from 'gulp-grunt';
 import component from 'gulp-component-inline';
 import transport from 'gulp-cmd-transport';
 import fileinclude from 'gulp-file-include';
@@ -16,8 +15,6 @@ import Utils from './gulpfile.utils.js';
 const domainMap = Utils.generateDomainMap();
 const isTemplate = Utils.getEnvValue('t');
 var pathConfig = require('./config/gulpfile.path.js');
-
-gulpgrunt(gulp);
 
 export default function devTask() {
 	gulp.task('del', done => {
@@ -42,7 +39,7 @@ export default function devTask() {
 		    }))
 			.pipe(template(domainMap))
 	        .pipe(gulp.dest(pathConfig.html.dev))
-			.pipe(connect.reload());;
+			.pipe(connect.reload());
 	});
 
 	gulp.task('php', () => {
@@ -71,8 +68,7 @@ export default function devTask() {
 	        .pipe(sass())
 	        .pipe(template(domainMap))
 	        .pipe(autoprefixer({
-	          browsers: ['> 1%'],
-	          cascade: false
+	          browsers: ['> 20%', 'iOS > 6', 'Android > 4']
 	        }))
 	        .pipe(gulp.dest(pathConfig.css.dev))
 			.pipe(gulpif(isTemplate, connect.reload()));
@@ -84,8 +80,7 @@ export default function devTask() {
 	        .pipe(plumber())
 	        .pipe(template(domainMap))
 	        .pipe(autoprefixer({
-	          browsers: ['> 1%'],
-	          cascade: false
+	          browsers: ['> 20%', 'iOS > 6', 'Android > 4']
 	        }))
 			.pipe(gulp.dest(pathConfig.css.dev));
 	});
@@ -127,8 +122,6 @@ export default function devTask() {
 			livereload: true
 		});
 	});
-
-	gulp.task('rev', gulp.series('grunt-userev'));
 
 	gulp.task('watch', () => {
 		gulp.watch(pathConfig.controller.watch, gulp.series('controller'));

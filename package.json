@@ -1,7 +1,7 @@
 {
-  "name": "gulp-start",
-  "version": "0.1.0",
-  "description": "enhrance my workflow",
+  "name": "template-edit",
+  "version": "1.0.0",
+  "description": "Improve workflow efficiency ———— weidian_decorate_H5",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
@@ -15,12 +15,12 @@
     "gulp": "github:gulpjs/gulp#4.0",
     "gulp-autoprefixer": "^4.0.0",
     "gulp-changed": "^3.1.0",
-    "gulp-clean-css": "^3.4.2",
+    "gulp-clean-css": "^3.9.0",
     "gulp-cmd-transport": "^0.1.2",
     "gulp-component-inline": "^1.1.1",
     "gulp-connect": "^5.0.0",
+    "gulp-csslint": "^1.0.0",
     "gulp-debug": "^3.1.0",
-    "gulp-eslint": "^4.0.0",
     "gulp-file-include": "^1.2.0",
     "gulp-grunt": "^0.5.5",
     "gulp-htmlmin": "^3.0.0",
@@ -33,17 +33,24 @@
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-template": "^4.0.0",
-    "gulp-uglify": "^3.0.0"
+    "gulp-uglify": "^3.0.0",
+    "gulp-zip": "^4.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "local": "gulp local",
-	"watch": "gulp watch",
+    "watch": "gulp watch",
     "product": "gulp product"
   },
   "keywords": [
-    "gulp"
+    "gulp",
+    "grunt",
+    "uglify",
+    "sass",
+    "seajs",
+    "template",
+    "lint",
+    "zip"
   ],
-  "author": "liyu",
-  "license": "MIT"
+  "author": "suanmei",
+  "license": "ISC"
 }

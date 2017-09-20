@@ -73,11 +73,11 @@ var Utils = {
 		});
 	},
 	/**
-	 * 根据 task 类型获取对应的 js/css 文件路径
+	 * 根据 task 类型获取对应的 js/css Glob
 	 * @param  {Object} fileMap - 文件路径存储对象
-	 * @return {Array} - task 对应文件匹配表达式
+	 * @return {Array} - task 对应 glob
 	 */
-	getFilesByTask: function(fileMap) {
+	getGlobByTask: function(fileMap) {
 		var key =
 			isTemplate ?
 				isAll ?

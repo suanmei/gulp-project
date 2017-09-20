@@ -1,66 +1,56 @@
-import gulp from 'gulp';
-import uglify from 'gulp-uglify';
-import sass from 'gulp-sass';
-import htmlmin from 'gulp-htmlmin';
-import minifyCSS from 'gulp-clean-css';
-import imagemin from 'gulp-imagemin';
-import rename from "gulp-rename";
-import connect from "gulp-connect";
-import changed from 'gulp-changed';
-import debug from 'gulp-debug';
-import sourcemaps from 'gulp-sourcemaps';
 import del from 'del';
-import notify from 'gulp-notify';
-import eslint from 'gulp-eslint';
-import autoprefixer from 'gulp-autoprefixer';
-import fileinclude from 'gulp-file-include';
-import template from 'gulp-template';
-import plumber from 'gulp-plumber';
-import component from 'gulp-component-inline';
-import transport from 'gulp-cmd-transport';
+import gulp from 'gulp';
+import sass from 'gulp-sass';
 import gulpif from 'gulp-if';
+import uglify from 'gulp-uglify';
+import rename from "gulp-rename";
+import notify from 'gulp-notify';
+import plumber from 'gulp-plumber';
+import htmlmin from 'gulp-htmlmin';
+import csslint from 'gulp-csslint';
+import template from 'gulp-template';
+import imagemin from 'gulp-imagemin';
 import gulpgrunt from 'gulp-grunt';
+import minifyCSS from 'gulp-clean-css';
+import transport from 'gulp-cmd-transport';
+import component from 'gulp-component-inline';
+import sourcemaps from 'gulp-sourcemaps';
+import fileinclude from 'gulp-file-include';
+import autoprefixer from 'gulp-autoprefixer';
 import Utils from './gulpfile.utils.js';
 const domainMap = Utils.generateDomainMap();
+const env = Utils.getEnvValue('env');
 const isTemplate = Utils.getEnvValue('t');
 var pathConfig = require('./config/gulpfile.path.js');
 
-gulpgrunt(gulp);
+gulpgrunt(gulp, {
+	force: false
+});
 
-export default function devTask() {
+export default function prodTask() {
 	gulp.task('del', done => {
-	    del.sync(pathConfig.dev);
+	    del.sync([pathConfig.dev, pathConfig.dist, pathConfig.zip]);
 	    done();
 	});
 
 	gulp.task('controller', () => {
 	    return gulp.src(pathConfig.controller.src)
-			.pipe(changed(pathConfig.controller.dev))
 			.pipe(plumber())
 			.pipe(template(domainMap))
 	        .pipe(gulp.dest(pathConfig.controller.dev));
 	});
 
-	gulp.task('html', () => {
-	    return gulp.src(pathConfig.html.src)
-			.pipe(changed(pathConfig.html.dev))
-			.pipe(plumber())
-	        .pipe(fileinclude({
-		      basepath: pathConfig.fileinclude.src
-		    }))
-			.pipe(template(domainMap))
-	        .pipe(gulp.dest(pathConfig.html.dev))
-			.pipe(connect.reload());;
-	});
-
 	gulp.task('php', () => {
 	    return gulp.src(pathConfig.php.src)
-			.pipe(changed(pathConfig.php.dev))
 			.pipe(plumber())
 	        .pipe(fileinclude({
 		      basepath: pathConfig.fileinclude.src
 		    }))
 			.pipe(template(domainMap))
+			.pipe(htmlmin({
+				collapseWhitespace: true,
+				minifyCSS: true
+			}))
 	        .pipe(gulp.dest(pathConfig.php.dev));
 	});
 
@@ -69,103 +59,66 @@ export default function devTask() {
 			.pipe(plumber())
 			.pipe(component())
 			.pipe(template(domainMap))
-			// .pipe(transport())
-			// .pipe(rev())
-	        .pipe(gulp.dest(pathConfig.js.dev))
-			// .pipe(rev.manifest({
-			// 	base: 'dev/',
-			// 	merge: true
-			// }))
-			// .pipe(gulp.dest(pathConfig.js.dev))
-			.pipe(gulpif(isTemplate, connect.reload()));
+			.pipe(transport())
+			.pipe(sourcemaps.init())
+			.pipe(uglify())
+			.pipe(sourcemaps.write())
+	        .pipe(gulp.dest(pathConfig.js.dev));
 	});
 
 	gulp.task('sass', () => {
 	    return gulp.src(pathConfig.sass.src, {base: 'src/scss'})
 	        .pipe(plumber())
-			.pipe(changed(pathConfig.css.dev, {extension:'.css'}))
 	        .pipe(sass())
 	        .pipe(template(domainMap))
+			.pipe(csslint())
 	        .pipe(autoprefixer({
-	          browsers: ['> 1%'], // 主流浏览器的最新两个版本
-	          cascade: false // 是否美化属性值
+	          browsers: ['> 20%', 'iOS > 6', 'Android > 4'],
+	          cascade: false
 	        }))
-	        // .pipe(minifyCSS())
-	        .pipe(gulp.dest(pathConfig.css.dev))
-			.pipe(gulpif(isTemplate, connect.reload()));
+			.pipe(minifyCSS())
+	        .pipe(gulp.dest(pathConfig.css.dev));
 	});
 
 	gulp.task('css', () => {
 	    return gulp.src(pathConfig.css.src, {base: 'src/css'})
-			.pipe(changed(pathConfig.css.dev))
 	        .pipe(plumber())
 	        .pipe(template(domainMap))
+			.pipe(csslint())
 	        .pipe(autoprefixer({
-	          browsers: ['> 1%'], // 主流浏览器的最新两个版本
-	          cascade: false // 是否美化属性值
+	          browsers: ['> 20%', 'iOS > 6', 'Android > 4'],
+	          cascade: false
 	        }))
-	        // .pipe(minifyCSS())
-			// .pipe(rev())
-	        // .pipe(gulp.dest(pathConfig.css.dev))
-			// .pipe(rev.manifest())
-			.pipe(gulp.dest(pathConfig.css.dev));
+	        .pipe(minifyCSS())
+	        .pipe(gulp.dest(pathConfig.css.dev));
 	});
 
 	gulp.task('img', () => {
 	    return gulp.src(pathConfig.img.src, {base: 'src/images'})
-			.pipe(changed(pathConfig.img.dev))
-			// .pipe(imagemin())
-	        .pipe(gulp.dest(pathConfig.img.dev))
-			.pipe(gulpif(isTemplate, connect.reload()));
+			// .pipe(imagemin([
+			// 	imagemin.gifsicle({interlaced: true}),
+			// 	imagemin.jpegtran({progressive: true}),
+			// 	imagemin.optipng({optimizationLevel: 1}),
+			// 	imagemin.svgo({
+			// 		plugins: [
+			// 			{removeViewBox: true}
+			// 		]
+			// 	})
+			// ]))
+	        .pipe(gulp.dest(pathConfig.img.dev));
 	});
 
 	gulp.task('font', () => {
 	    return gulp.src(pathConfig.font.src, {base: 'src/fonts'})
-			.pipe(changed(pathConfig.font.dev))
-	        .pipe(gulp.dest(pathConfig.font.dev))
-			.pipe(gulpif(isTemplate, connect.reload()));
-	});
-
-	gulp.task('mock', () => {
-	    return gulp.src(pathConfig.mock.src, {base: 'src/mock'})
-			.pipe(plumber())
-			.pipe(template(domainMap))
-			.pipe(changed(pathConfig.mock.dev))
-	        .pipe(gulp.dest(pathConfig.mock.dev))
-			.pipe(connect.reload());;
-	});
-
-	gulp.task('testData', () => {
-	    return gulp.src(pathConfig.testData.src, {base: 'src/test'})
-			.pipe(changed(pathConfig.testData.dev))
-	        .pipe(gulp.dest(pathConfig.testData.dev))
-			.pipe(connect.reload());
-	});
-
-	gulp.task('connect', () => {
-		connect.server({
-			root: 'dev/',
-			port: 9001,
-			livereload: true
-		});
+	        .pipe(gulp.dest(pathConfig.font.dev));
 	});
 
 	gulp.task('rev', gulp.series('grunt-userev'));
 
-	gulp.task('watch', () => {
-		gulp.watch(pathConfig.controller.src, gulp.series('controller'));
-		gulp.watch(pathConfig.php.src, gulp.series('php'));
-		gulp.watch(pathConfig.css.src, gulp.series('css'));
-		gulp.watch(pathConfig.js.src, gulp.series('js'));
-	    gulp.watch(pathConfig.sass.src, gulp.series('sass'));
-		gulp.watch(pathConfig.img.src, gulp.series('img'));
-		gulp.watch(pathConfig.font.src, gulp.series('font'));
-	});
-
 	if (isTemplate) {
-		gulp.task('local', gulp.series('del', gulp.parallel('img', 'sass', 'js', 'font', 'mock', 'html', 'testData'), gulp.parallel('connect', 'watch')));
+		gulp.task('product', gulp.series('del', gulp.parallel('img', 'sass', 'js', 'font', 'mock', 'html', 'testData'), gulp.parallel('connect', 'watch')));
 		return;
 	}
 
-	gulp.task('local', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'watch'));
+	gulp.task('product', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'rev'));
 };
