@@ -95,16 +95,16 @@ export default function prodTask() {
 
 	gulp.task('img', () => {
 	    return gulp.src(pathConfig.img.src, {base: 'src/images'})
-			// .pipe(imagemin([
-			// 	imagemin.gifsicle({interlaced: true}),
-			// 	imagemin.jpegtran({progressive: true}),
-			// 	imagemin.optipng({optimizationLevel: 1}),
-			// 	imagemin.svgo({
-			// 		plugins: [
-			// 			{removeViewBox: true}
-			// 		]
-			// 	})
-			// ]))
+			.pipe(imagemin([
+				imagemin.gifsicle({interlaced: true}),
+				imagemin.jpegtran({progressive: true}),
+				imagemin.optipng({optimizationLevel: 1}),
+				imagemin.svgo({
+					plugins: [
+						{removeViewBox: true}
+					]
+				})
+			]))
 	        .pipe(gulp.dest(pathConfig.img.dev));
 	});
 
@@ -120,5 +120,5 @@ export default function prodTask() {
 		return;
 	}
 
-	gulp.task('product', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'rev'));
+	gulp.task('product', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font')));
 };

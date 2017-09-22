@@ -157,6 +157,7 @@ var Utils = {
 
 		return concatConfig;
 	},
+
 	/**
 	 * 生成 usemin 配置参数
 	 * @return {[Object} - usemin 配置项
