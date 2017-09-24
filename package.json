@@ -39,6 +39,8 @@
   "scripts": {
     "local": "gulp local",
     "watch": "gulp watch",
+	"test": "gulp test",
+	"pre_product": "gulp pre_product",
     "product": "gulp product"
   },
   "keywords": [

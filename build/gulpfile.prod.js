@@ -115,10 +115,7 @@ export default function prodTask() {
 
 	gulp.task('rev', gulp.series('grunt-userev'));
 
-	if (isTemplate) {
-		gulp.task('product', gulp.series('del', gulp.parallel('img', 'sass', 'js', 'font', 'mock', 'html', 'testData'), gulp.parallel('connect', 'watch')));
-		return;
-	}
+	gulp.task('release', Utils.buildReleaseTask());
 
-	gulp.task('product', gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font')));
+	Utils.registerTaskByEnv();
 };
