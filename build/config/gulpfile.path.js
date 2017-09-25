@@ -21,7 +21,7 @@ var FONTFILE = {
 	allTemplate: ['**', '!default/*', '!supermarket/*']
 };
 var IMGFILE = {
-	logic: ['**', '!index/default/**'],
+	logic: ['**', '!index/**'],
 	template: ['common/**', 'index/*', 'index/' + templateName + '/*'],
 	allTemplate: ['**', '!/index/default/**']
 };

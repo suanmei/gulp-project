@@ -168,9 +168,9 @@ var Utils = {
 	 */
 	buildReleaseTask: function() {
 		var serverFiles = '**/*.php',
-			logicStatic = ['css/**', '!css/base/**', 'js/**', '!js/theme/**', 'js/theme/default*.js', 'images/**', '!images/index/**', 'fonts/**'],
-			templateStatic = ['css/index/**' + templateName + '.*css', 'js/theme/' + templateName + '.*js', 'images/index/' + templateName + '/*', 'fonts/' + templateName + '/*'],
-			allTemplateStatic = ['css/index/**', '!css/index/index.css', '!css/index/supermarket/*', '!css/index/default/*', 'js/theme/**', 'images/index/**', 'fonts/**'],
+			logicStatic = ['css/**', 'js/**', 'images/**', 'fonts/**'],
+			templateStatic = ['css/**', 'js/theme/**', 'images/**', 'fonts/**'],
+			allTemplateStatic = ['css/**', '!css/index/index.css', 'js/theme/**', 'images/**', 'fonts/**'],
 			serverReleaseDir = DIST + 'p5/',
 			staticReleaseDir = DIST + (envISTest ? 'H5/' : 'static/') + config.product + (envISTest ? ('/' + config.staticDir) : ''),
 			isNeedZIP = env === 'product',
