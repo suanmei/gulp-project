@@ -208,6 +208,7 @@ var Utils = {
 	 * 根据部署环境注册对应的构建任务
 	 */
 	registerTaskByEnv: function() {
+		if (env === 'local') return;
 		gulp.task(env, gulp.series('del', gulp.parallel('controller', 'php', 'sass', 'css', 'js', 'img', 'font'), 'rev', 'release'));
 	},
 	/**
