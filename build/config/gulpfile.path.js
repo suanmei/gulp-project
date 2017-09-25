@@ -8,12 +8,12 @@ var ZIP_DIR = 'weidian/';		// 打包目录
 var SASSFILE = {
 	logic: ['**', '!common/**', '!base/**', '!components/**', '!index/**', 'index/default.scss'],
 	template: ['index/' + templateName + '.scss'],
-	allTemplate: ['**']
+	allTemplate: ['index/**']
 };
 var JSFILE = {
-	logic: ['**', '!theme/*', 'theme/default.js'],
-	template: ['common/**', 'index/**', 'components/**', 'theme/' + templateName + '.js'],
-	allTemplate: ['**']
+	logic: ['**.js', '!theme/*', 'theme/default.js'],
+	template: ['common/**.js', 'index/**', 'components/**', 'theme/' + templateName + '.js'],
+	allTemplate: ['common/**.js', 'index/**', 'components/**', 'theme/*']
 };
 var FONTFILE = {
 	logic: ['default/*', 'supermarket/*'],

@@ -172,7 +172,7 @@ var Utils = {
 			templateStatic = ['css/index/**' + templateName + '.*css', 'js/theme/' + templateName + '.*js', 'images/index/' + templateName + '/*', 'fonts/' + templateName + '/*'],
 			allTemplateStatic = ['css/index/**', '!css/index/index.css', '!css/index/supermarket/*', '!css/index/default/*', 'js/theme/**', 'images/index/**', 'fonts/**'],
 			serverReleaseDir = DIST + 'p5/',
-			staticReleaseDir = DIST + (envISTest ? 'p5/' : 'static/') + config.product + (envISTest ? ('/' + config.date) : ''),
+			staticReleaseDir = DIST + (envISTest ? 'H5/' : 'static/') + config.product + (envISTest ? ('/' + config.staticDir) : ''),
 			isNeedZIP = env === 'product',
 			releaseArr,
 			tasks;

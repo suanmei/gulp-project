@@ -59,10 +59,10 @@ export default function prodTask() {
 			.pipe(plumber())
 			.pipe(component())
 			.pipe(template(domainMap))
-			.pipe(transport())
-			.pipe(sourcemaps.init())
-			.pipe(uglify())
-			.pipe(sourcemaps.write())
+			// .pipe(transport())
+			// .pipe(sourcemaps.init())
+			// .pipe(uglify())
+			// .pipe(sourcemaps.write())
 	        .pipe(gulp.dest(pathConfig.js.dev));
 	});
 
@@ -71,12 +71,12 @@ export default function prodTask() {
 	        .pipe(plumber())
 	        .pipe(sass())
 	        .pipe(template(domainMap))
-			.pipe(csslint())
+			// .pipe(csslint())
 	        .pipe(autoprefixer({
 	          browsers: ['> 20%', 'iOS > 6', 'Android > 4'],
 	          cascade: false
 	        }))
-			.pipe(minifyCSS())
+			// .pipe(minifyCSS())
 	        .pipe(gulp.dest(pathConfig.css.dev));
 	});
 
@@ -84,27 +84,27 @@ export default function prodTask() {
 	    return gulp.src(pathConfig.css.src, {base: 'src/css'})
 	        .pipe(plumber())
 	        .pipe(template(domainMap))
-			.pipe(csslint())
+			// .pipe(csslint())
 	        .pipe(autoprefixer({
 	          browsers: ['> 20%', 'iOS > 6', 'Android > 4'],
 	          cascade: false
 	        }))
-	        .pipe(minifyCSS())
+	        // .pipe(minifyCSS())
 	        .pipe(gulp.dest(pathConfig.css.dev));
 	});
 
 	gulp.task('img', () => {
 	    return gulp.src(pathConfig.img.src, {base: 'src/images'})
-			.pipe(imagemin([
-				imagemin.gifsicle({interlaced: true}),
-				imagemin.jpegtran({progressive: true}),
-				imagemin.optipng({optimizationLevel: 1}),
-				imagemin.svgo({
-					plugins: [
-						{removeViewBox: true}
-					]
-				})
-			]))
+			// .pipe(imagemin([
+			// 	imagemin.gifsicle({interlaced: true}),
+			// 	imagemin.jpegtran({progressive: true}),
+			// 	imagemin.optipng({optimizationLevel: 1}),
+			// 	imagemin.svgo({
+			// 		plugins: [
+			// 			{removeViewBox: true}
+			// 		]
+			// 	})
+			// ]))
 	        .pipe(gulp.dest(pathConfig.img.dev));
 	});
 
